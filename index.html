@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>play</title>
+  </head>
+  <body style="margin:0;padding:10px;">
+    <button
+      style="position:fixed;top:10px;left:10px;"
+      onclick="speechSynthesis.paused?speechSynthesis.resume():speechSynthesis.pause()"
+    >
+      pause/resume
+    </button>
+    <div style="margin-top:50px;">
+        playing
+        <textarea rows="10" id="playing" class="playing" style="min-width:100%;max-width: 100%;"></textarea>
+        played
+        <textarea rows="10" id="played" class="playing" style="min-width:100%;max-width: 100%;"></textarea>
+
+    </div>
+    <div style="padding: 10px;display: flex;justify-content: center;">
+        <input style="width:40px;" type="number" name="rate" step="0.1" id="speakrate" value="1">
+        <button onclick="play(true)">Start</button>
+    </div>
+  </body>
+  <script>
+    var playingta = document.getElementById('playing');
+    var playedta = document.getElementById('played');
+    var playingtext;
+    var toplaytext;
+    var rate;
+    // var start = function(contin){
+    //     toplaytext = playingta.value;
+    //     play(true)
+    // }
+    var play = function(frombegining){
+        
+        if(!playingta.value.length) return;
+        var msg = new SpeechSynthesisUtterance();
+        rate = document.getElementById('speakrate').value;
+        let firstsentence = playingta.value.indexOf(".");
+        firstsentence = firstsentence ==-1? playingta.value.length: firstsentence+1;
+        if(!frombegining){
+            playedta.value += playingta.value.slice(0,firstsentence);
+            playingta.value = playingta.value.slice(firstsentence);
+            firstsentence = playingta.value.indexOf(".") ;
+            firstsentence = firstsentence ==-1? playingta.value.length: firstsentence+1;
+        }
+        msg.text = playingta.value.slice(0,firstsentence);
+        msg.rate = rate;
+        msg.onend = function(){return play(false);}
+        speechSynthesis.speak(msg);
+    }
+  </script>
+</html>
