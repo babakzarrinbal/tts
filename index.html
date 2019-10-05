@@ -25,6 +25,7 @@
         value="1"
       />
       <button style="margin-left:10px;" onclick="loadprev()">load</button>
+      <button style="margin-left:10px;" onclick="clearall()">clear</button>
     </div>
 
     <div style="margin-top:50px;">
@@ -81,6 +82,13 @@
         
         playingta.value = window.localStorage.getItem("playingta");
         playedta.value = window.localStorage.getItem("playedta");
+    }
+    var clearall = function(){
+        if(!confirm('sure to clear all?')) return;
+        playingta.value = "";
+        playedta.value="";
+        window.localStorage.setItem("playingta", "");
+      window.localStorage.setItem("playedta", "");
     }
   </script>
 </html>
