@@ -24,7 +24,8 @@
         id="speakrate"
         value="1"
       />
-      <button style="margin-left:10px;" onclick="loadprev()">load</button>
+      <button style="margin-left:10px;" onclick="savecur()">save</button>
+      <button  onclick="loadprev()">load</button>
       <button style="margin-left:10px;" onclick="clearall()">clear</button>
     </div>
 
@@ -75,13 +76,16 @@
         return play(false);
       };
       speechSynthesis.speak(msg);
-      window.localStorage.setItem("playingta", playingta.value);
-      window.localStorage.setItem("playedta", playedta.value);
+      
     };
     var loadprev = function(){
-        
         playingta.value = window.localStorage.getItem("playingta");
         playedta.value = window.localStorage.getItem("playedta");
+    }
+    var savecur = function(){
+        window.localStorage.setItem("playingta", playingta.value);
+      window.localStorage.setItem("playedta", playedta.value);
+      alert('saved');
     }
     var clearall = function(){
         if(!confirm('sure to clear all?')) return;
