@@ -74,6 +74,8 @@
     // }
     var play = function(frombegining) {
       if (!playingta.value.length) return;
+       playingta = document.getElementById("playing");
+     playedta = document.getElementById("played");
       var msg = new SpeechSynthesisUtterance();
       rate = document.getElementById("speakrate").value;
       let firstsentence = playingta.value.indexOf(".");
