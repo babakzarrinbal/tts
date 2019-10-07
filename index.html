@@ -32,6 +32,9 @@
             <option value="12">12</option>
             <option value="13">13</option>
             <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+            <option value="17">17</option>
           </select>
       </div>
       <div>
@@ -42,7 +45,6 @@
           step="0.1"
           id="speakrate"
           value="1.3"
-          onchange="console.log(this.value)"
         />
         <button style="margin-left:10px;" onclick="savecur()">save</button>
         <button onclick="loadprev()">load</button>
@@ -133,66 +135,12 @@
       }
     };
     var stories = [];
-    [];
+    for(let i =0;i<18;i++){
     window
-      .fetch("resource/stories/0.txt")
+      .fetch("resource/stories/"+i+".txt")
       .then(res => res.text())
-      .then(r => (stories[0] = r));
-    window
-      .fetch("resource/stories/1.txt")
-      .then(res => res.text())
-      .then(r => (stories[1] = r));
-    window
-      .fetch("resource/stories/2.txt")
-      .then(res => res.text())
-      .then(r => (stories[2] = r));
-    window
-      .fetch("resource/stories/3.txt")
-      .then(res => res.text())
-      .then(r => (stories[3] = r));
-    window
-      .fetch("resource/stories/4.txt")
-      .then(res => res.text())
-      .then(r => (stories[4] = r));
-    window
-      .fetch("resource/stories/5.txt")
-      .then(res => res.text())
-      .then(r => (stories[5] = r));
-    window
-      .fetch("resource/stories/6.txt")
-      .then(res => res.text())
-      .then(r => (stories[6] = r));
-    window
-      .fetch("resource/stories/7.txt")
-      .then(res => res.text())
-      .then(r => (stories[7] = r));
-    window
-      .fetch("resource/stories/8.txt")
-      .then(res => res.text())
-      .then(r => (stories[8] = r));
-    window
-      .fetch("resource/stories/9.txt")
-      .then(res => res.text())
-      .then(r => (stories[9] = r));
-    window
-      .fetch("resource/stories/10.txt")
-      .then(res => res.text())
-      .then(r => (stories[10] = r));
-    window
-      .fetch("resource/stories/11.txt")
-      .then(res => res.text())
-      .then(r => (stories[11] = r));
-    window
-      .fetch("resource/stories/12.txt")
-      .then(res => res.text())
-      .then(r => (stories[12] = r));
-    window
-      .fetch("resource/stories/13.txt")
-      .then(res => res.text())
-      .then(r => (stories[13] = r));
-    window
-      .fetch("resource/stories/14.txt")
-      .then(res => res.text())
-      .then(r => (stories[14] = r));
+      .then(r => (stories[i] = r));
+
+    }
   </script>
 </html>
