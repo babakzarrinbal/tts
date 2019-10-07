@@ -15,11 +15,11 @@
   <meta name="msapplication-TileImage" content="images/hello-icon-144.png">
   <meta name="msapplication-TileColor" content="#FFFFFF">
 </head>
-<body style="margin:0;padding:10px;">
+<body style="width:100%;margin:0;padding:10px;">
   <div
-    style="position:fixed;top:0;left:0;padding: 10px;display: flex;justify-content: center;width:100%;flex-wrap: wrap;"
+    style="padding: 10px;display: flex;justify-content: center;width:100%;flex-wrap: wrap;"
   >
-    <div style="margin-bottom:10px;">
+    <div style="margin-bottom: 10px">
       <button onclick="play()">Start</button>
 
       <button
@@ -53,6 +53,8 @@
         <option value="17">17</option>
       </select>
     </div>
+    <select style="width:100px;margin:0 10px 10px;" id="voiceselect" onchange="selectedvoice = voices[this.value]">
+      </select>
     <div>
       <input
         style="width:40px;"
@@ -70,7 +72,7 @@
     </div>
   </div>
 
-  <div style="margin-top:60px;">
+  <div >
     playing
     <textarea
       rows="10"
