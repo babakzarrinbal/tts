@@ -44,7 +44,7 @@ var play = function() {
     );
   }
   if(firstsentence>150){
-    firstsentence = playingta.value.indexOf(" ",150)
+    firstsentence = playingta.value.indexOf(" ",500)
   }
   firstsentence =
     firstsentence == -1 ? playingta.value.length : firstsentence + 1;
