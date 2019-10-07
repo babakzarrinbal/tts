@@ -13,6 +13,13 @@ var toplaytext;
 var rate;
 var stoppedplayback = false;
 var selectedvoice;
+var clicked = 0;
+var showhidden=function(){
+  clicked++;
+  if(clicked >10){
+    document.getElementById('storyval').style.display = "block";
+  }
+}
 var play = function(frombegining) {
   if (stoppedplayback) {
     speechSynthesis.cancel();

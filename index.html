@@ -31,6 +31,7 @@
       <select
         name=""
         id="storyval"
+        style="display:none;"
         onchange="savedstories(this.value)"
         onfocus="this.onchange()"
       >
@@ -80,7 +81,7 @@
       class="playing"
       style="min-width:100%;max-width: 100%;"
     ></textarea>
-    played
+    <span onclick="showhidden()">played</span>
     <textarea
       rows="10"
       id="played"
