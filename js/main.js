@@ -96,7 +96,7 @@ savedstories = function(ev) {
 var stories = [];
 for (let i = 0; i < 18; i++) {
   window
-    .fetch("resource/stories/" + i + ".txt")
+    .fetch("/tts/resource/stories/" + i + ".txt")
     .then(res => res.text())
     .then(r => (stories[i] = r));
 }
