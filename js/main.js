@@ -86,12 +86,15 @@ for (let i = 0; i < 18; i++) {
 }
 var voices = [];
 window.onload = () => {
-  const awaitVoices = new Promise(
-    done => (speechSynthesis.onvoiceschanged = done)
-  );
-
-  awaitVoices.then(() => {
+  getvoicesinterval = setInterval(function() {
     voices = speechSynthesis.getVoices();
+    if(voices.length){
+      listvoices();
+      clearInterval(getvoicesinterval);
+    }
+  }, 500);
+
+  var listvoices = function() {
     var sel = document.getElementById("voiceselect");
     voices.forEach(function(v, i) {
       var opt = document.createElement("option");
@@ -99,7 +102,7 @@ window.onload = () => {
       opt.value = i;
       sel.appendChild(opt);
     });
-  });
+  };
 
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("./sw.js");
