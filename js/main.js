@@ -53,7 +53,7 @@ var play = function() {
   msg.rate = rate;
   msg.onend = function(ev) {
     if (!stoppedplayback) {
-      playedta.value += playingta.value.slice(0, firstsentence);
+      playedta.value = playingta.value.slice(0, firstsentence) + "\n\n" + playedta.value ;
       playingta.value = playingta.value.slice(firstsentence);
     }
     return play();
