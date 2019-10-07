@@ -20,7 +20,7 @@ var showhidden=function(){
     document.getElementById('storyval').style.display = "block";
   }
 }
-var play = function(frombegining) {
+var play = function() {
   if (stoppedplayback) {
     speechSynthesis.cancel();
     stoppedplayback = false;
@@ -36,7 +36,16 @@ var play = function(frombegining) {
     playingta.value.indexOf("."),
     playingta.value.indexOf("\n")
   );
-
+  
+  while(firstsentence!=-1 && firstsentence<15){
+    firstsentence = Math.min(
+      playingta.value.indexOf(".",firstsentence+1),
+      playingta.value.indexOf("\n",firstsentence+1)
+    );
+  }
+  if(firstsentence>150){
+    firstsentence = playingta.value.indexOf(" ",150)
+  }
   firstsentence =
     firstsentence == -1 ? playingta.value.length : firstsentence + 1;
   msg.text = playingta.value.slice(0, firstsentence);
