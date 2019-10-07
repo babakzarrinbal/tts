@@ -90,8 +90,9 @@
       var msg = new SpeechSynthesisUtterance();
       rate = document.getElementById("speakrate").value;
       
-      let firstsentence = 0;
-        firstsentence = playingta.value.indexOf(".", firstsentence + 1);
+      
+        let firstsentence = Math.min(playingta.value.indexOf("."),playingta.value.indexOf("\n"));
+        
       firstsentence =
         firstsentence == -1 ? playingta.value.length : firstsentence + 1;
       msg.text = playingta.value.slice(0, firstsentence);
