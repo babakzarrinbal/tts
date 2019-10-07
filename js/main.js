@@ -43,7 +43,7 @@ var play = function() {
       playingta.value.indexOf("\n",firstsentence+1)
     );
   }
-  if(firstsentence>150){
+  if(firstsentence>500){
     firstsentence = playingta.value.indexOf(" ",500)
   }
   firstsentence =
