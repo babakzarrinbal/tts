@@ -8,44 +8,50 @@
   </head>
   <body style="margin:0;padding:10px;">
     <div
-      style="position:fixed;top:0;left:0;padding: 10px;display: flex;justify-content: center;"
+      style="position:fixed;top:0;left:0;padding: 10px;display: flex;justify-content: center;width:100%;flex-wrap: wrap;"
     >
-      <button onclick="play(true)">Start</button>
-      <button
-        onclick="speechSynthesis.paused?speechSynthesis.resume():speechSynthesis.pause()"
-      >
-        pause/resume
-      </button>
-      <input
-        style="width:40px;"
-        type="number"
-        name="rate"
-        step="0.1"
-        id="speakrate"
-        value="1.3"
-      />
-      <button style="margin-left:10px;" onclick="savecur()">save</button>
-      <button  onclick="loadprev()">load</button>
-      <button style="margin-left:10px;" onclick="clearall()">clear</button>
-      <select name="" id="" onchange="savedstories(this.value)">
-          <option value="0">0</option>
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
-          <option value="6">6</option>
-          <option value="8">8</option>
-          <option value="9">9</option>
-          <option value="10">10</option>
-          <option value="11">11</option>
-          <option value="12">12</option>
-          <option value="13">13</option>
-          <option value="14">14</option>
-      </select>
+      <div style="margin-bottom:10px;">
+        <button onclick="play()">Start</button>
+
+        <button onclick="speechSynthesis.cancel();stoppedplayback=true;savecur(true);">
+          Stop
+        </button>
+        
+        <select name="" id="storyval" onchange="savedstories(this.value)" onfocus="this.onchange()">
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+          </select>
+      </div>
+      <div>
+        <input
+          style="width:40px;"
+          type="number"
+          name="rate"
+          step="0.1"
+          id="speakrate"
+          value="1.3"
+          onchange="console.log(this.value)"
+        />
+        <button style="margin-left:10px;" onclick="savecur()">save</button>
+        <button onclick="loadprev()">load</button>
+        <button style="margin-left:10px;" onclick="clearall()">Reset</button>
+        
+      </div>
     </div>
 
-    <div style="margin-top:50px;">
+    <div style="margin-top:60px;">
       playing
       <textarea
         rows="10"
@@ -68,71 +74,125 @@
     var playingtext;
     var toplaytext;
     var rate;
-    // var start = function(contin){
-    //     toplaytext = playingta.value;
-    //     play(true)
-    // }
+    var stoppedplayback = false;
+
     var play = function(frombegining) {
-        playingta = document.getElementById("playing");
-        playedta = document.getElementById("played");
+      if (stoppedplayback) {
+        speechSynthesis.cancel();
+        stoppedplayback = false;
+        return;
+      }
+      playingta = document.getElementById("playing");
+      playedta = document.getElementById("played");
       if (!playingta.value.length) return;
       var msg = new SpeechSynthesisUtterance();
       rate = document.getElementById("speakrate").value;
-      let firstsentence = playingta.value.indexOf(".");
+      
+      let firstsentence = 0;
+        firstsentence = playingta.value.indexOf(".", firstsentence + 1);
       firstsentence =
         firstsentence == -1 ? playingta.value.length : firstsentence + 1;
-      if (!frombegining) {
-        playedta.value += playingta.value.slice(0, firstsentence);
-        playingta.value = playingta.value.slice(firstsentence);
-        firstsentence = playingta.value.indexOf(".");
-        firstsentence =
-          firstsentence == -1 ? playingta.value.length : firstsentence + 1;
-      }
       msg.text = playingta.value.slice(0, firstsentence);
       msg.rate = rate;
-      msg.onend = function() {
-        return play(false);
+      msg.onend = function(ev) {
+        if (!stoppedplayback) {
+          playedta.value += playingta.value.slice(0, firstsentence);
+          playingta.value = playingta.value.slice(firstsentence);
+        }
+        return play();
       };
       speechSynthesis.speak(msg);
-      
     };
-    var loadprev = function(){
-        playingta.value = window.localStorage.getItem("playingta");
-        playedta.value = window.localStorage.getItem("playedta");
-    }
-    var savecur = function(){
-        window.localStorage.setItem("playingta", playingta.value);
-      window.localStorage.setItem("playedta", playedta.value);
-      alert('saved');
-    }
-    var clearall = function(){
-        if(!confirm('sure to clear all?')) return;
-        playingta.value = "";
-        playedta.value="";
-        window.localStorage.setItem("playingta", "");
-      window.localStorage.setItem("playedta", "");
-    }
-    savedstories = function(ev){
-        playingta.value = (stories[ev]||"").toString();
-        playedta.value="";
-    }
-    var stories =[];
-    []
-    window.fetch("resource/stories/0.txt").then(res=>res.text()).then(r=>stories[0] = r)
-    window.fetch("resource/stories/1.txt").then(res=>res.text()).then(r=>stories[1] = r)
-    window.fetch("resource/stories/2.txt").then(res=>res.text()).then(r=>stories[2] = r)
-    window.fetch("resource/stories/3.txt").then(res=>res.text()).then(r=>stories[3] = r)
-    window.fetch("resource/stories/4.txt").then(res=>res.text()).then(r=>stories[4] = r)
-    window.fetch("resource/stories/5.txt").then(res=>res.text()).then(r=>stories[5] = r)
-    window.fetch("resource/stories/6.txt").then(res=>res.text()).then(r=>stories[6] = r)
-    window.fetch("resource/stories/7.txt").then(res=>res.text()).then(r=>stories[7] = r)
-    window.fetch("resource/stories/8.txt").then(res=>res.text()).then(r=>stories[8] = r)
-    window.fetch("resource/stories/9.txt").then(res=>res.text()).then(r=>stories[9] = r)
-    window.fetch("resource/stories/10.txt").then(res=>res.text()).then(r=>stories[10] = r)
-    window.fetch("resource/stories/11.txt").then(res=>res.text()).then(r=>stories[11] = r)
-    window.fetch("resource/stories/12.txt").then(res=>res.text()).then(r=>stories[12] = r)
-    window.fetch("resource/stories/13.txt").then(res=>res.text()).then(r=>stories[13] = r)
-    window.fetch("resource/stories/14.txt").then(res=>res.text()).then(r=>stories[14] = r)
-
+    var loadprev = function() {
+      let ev = document.getElementById("storyval").value;
+      playingta.value = window.localStorage.getItem("playingta_"+ev);
+      playedta.value = window.localStorage.getItem("playedta_"+ev);
+    };
+    var savecur = function(hidden) {
+      let ev = document.getElementById("storyval").value;
+      window.localStorage.setItem("playingta_"+ev, playingta.value);
+      window.localStorage.setItem("playedta_"+ev, playedta.value);
+      !hidden && alert("saved");
+    };
+    var clearall = function() {
+      if (!confirm("sure to clear this text?")) return;
+      let ev = document.getElementById("storyval").value;
+      playingta.value = "";
+      playedta.value = "";
+      window.localStorage.setItem("playingta_"+ev, "");
+      window.localStorage.setItem("playedta_"+ev, "");
+    };
+    savedstories = function(ev) {
+      playingta.value = window.localStorage.getItem("playingta_"+ev)||"";
+      playedta.value = window.localStorage.getItem("playedta_"+ev)||"";
+      if(!playingta.value.length){
+        playingta.value = (stories[ev] || "").toString();
+        playedta.value = "";
+        window.localStorage.setItem("playingta_"+ev, playingta.value);
+        window.localStorage.setItem("playedta_"+ev,"");
+      }
+    };
+    var stories = [];
+    [];
+    window
+      .fetch("resource/stories/0.txt")
+      .then(res => res.text())
+      .then(r => (stories[0] = r));
+    window
+      .fetch("resource/stories/1.txt")
+      .then(res => res.text())
+      .then(r => (stories[1] = r));
+    window
+      .fetch("resource/stories/2.txt")
+      .then(res => res.text())
+      .then(r => (stories[2] = r));
+    window
+      .fetch("resource/stories/3.txt")
+      .then(res => res.text())
+      .then(r => (stories[3] = r));
+    window
+      .fetch("resource/stories/4.txt")
+      .then(res => res.text())
+      .then(r => (stories[4] = r));
+    window
+      .fetch("resource/stories/5.txt")
+      .then(res => res.text())
+      .then(r => (stories[5] = r));
+    window
+      .fetch("resource/stories/6.txt")
+      .then(res => res.text())
+      .then(r => (stories[6] = r));
+    window
+      .fetch("resource/stories/7.txt")
+      .then(res => res.text())
+      .then(r => (stories[7] = r));
+    window
+      .fetch("resource/stories/8.txt")
+      .then(res => res.text())
+      .then(r => (stories[8] = r));
+    window
+      .fetch("resource/stories/9.txt")
+      .then(res => res.text())
+      .then(r => (stories[9] = r));
+    window
+      .fetch("resource/stories/10.txt")
+      .then(res => res.text())
+      .then(r => (stories[10] = r));
+    window
+      .fetch("resource/stories/11.txt")
+      .then(res => res.text())
+      .then(r => (stories[11] = r));
+    window
+      .fetch("resource/stories/12.txt")
+      .then(res => res.text())
+      .then(r => (stories[12] = r));
+    window
+      .fetch("resource/stories/13.txt")
+      .then(res => res.text())
+      .then(r => (stories[13] = r));
+    window
+      .fetch("resource/stories/14.txt")
+      .then(res => res.text())
+      .then(r => (stories[14] = r));
   </script>
 </html>
