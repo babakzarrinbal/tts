@@ -34,6 +34,7 @@ var playingta = document.getElementById("playing");
       firstsentence =
         firstsentence == -1 ? playingta.value.length : firstsentence + 1;
       msg.text = playingta.value.slice(0, firstsentence);
+      msg.lang='en-US';
       msg.rate = rate;
       msg.onend = function(ev) {
         if (!stoppedplayback) {
