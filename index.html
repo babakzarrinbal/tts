@@ -31,26 +31,10 @@
         <select
           name=""
           id="storyval"
+          style="width:100px;"
           onchange="savedstories(this.value)"
           onfocus="this.onchange()"
         >
-          <option value="0">0</option>
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
-          <option value="6">6</option>
-          <option value="8">8</option>
-          <option value="9">9</option>
-          <option value="10">10</option>
-          <option value="11">11</option>
-          <option value="12">12</option>
-          <option value="13">13</option>
-          <option value="14">14</option>
-          <option value="15">15</option>
-          <option value="16">16</option>
-          <option value="17">17</option>
         </select>
       </div>
       <select
@@ -108,6 +92,8 @@
         class="playing"
         style="min-width:100%;max-width: 100%;"
       ></textarea>
+      <span>saving story <button onclick="savenewstory()">save</button></span>
+      <textarea  style="min-width:100%;max-width:100%;" id="savingstory"  rows="10"></textarea>
     </div>
     <script src="/tts/js/main.js"></script>
   </body>

@@ -14,12 +14,10 @@ var rate;
 var stoppedplayback = false;
 var selectedvoice;
 var clicked = 0;
-var showhidden=function(){
-  clicked++;
-  if(clicked >10){
-    document.getElementById('storyval').style.display = "block";
-  }
-}
+var voices = [];
+var stories = [];
+var userstories = [];
+
 var play = function() {
   if (stoppedplayback) {
     speechSynthesis.cancel();
@@ -36,15 +34,15 @@ var play = function() {
     playingta.value.indexOf("."),
     playingta.value.indexOf("\n")
   );
-  
-  while(firstsentence!=-1 && firstsentence<15){
+
+  while (firstsentence != -1 && firstsentence < 15) {
     firstsentence = Math.min(
-      playingta.value.indexOf(".",firstsentence+1),
-      playingta.value.indexOf("\n",firstsentence+1)
+      playingta.value.indexOf(".", firstsentence + 1),
+      playingta.value.indexOf("\n", firstsentence + 1)
     );
   }
-  if(firstsentence>500){
-    firstsentence = playingta.value.indexOf(" ",500)
+  if (firstsentence > 500) {
+    firstsentence = playingta.value.indexOf(" ", 500);
   }
   firstsentence =
     firstsentence == -1 ? playingta.value.length : firstsentence + 1;
@@ -53,7 +51,8 @@ var play = function() {
   msg.rate = rate;
   msg.onend = function(ev) {
     if (!stoppedplayback) {
-      playedta.value = playingta.value.slice(0, firstsentence) + "\n\n" + playedta.value ;
+      playedta.value =
+        playingta.value.slice(0, firstsentence) + "\n\n" + playedta.value;
       playingta.value = playingta.value.slice(firstsentence);
     }
     return play();
@@ -77,34 +76,61 @@ var clearall = function() {
 };
 var reset = function() {
   if (!confirm("sure to reset this text?")) return;
-  let ev = document.getElementById("storyval").value;
-  playingta.value = (stories[ev] || "").toString();
+  let id = document.getElementById("storyval").value;
+  playingta.value = (
+    (stories.find(s => s.id == id || "") || {}).text || ""
+  ).toString();
   playedta.value = "";
-  window.localStorage.setItem("playingta_" + ev, "");
-  window.localStorage.setItem("playedta_" + ev, "");
+  window.localStorage.setItem("playingta_" + id, "");
+  window.localStorage.setItem("playedta_" + id, "");
 };
-savedstories = function(ev) {
-  playingta.value = window.localStorage.getItem("playingta_" + ev) || "";
-  playedta.value = window.localStorage.getItem("playedta_" + ev) || "";
+var savenewstory = function() {};
+savedstories = function(id) {
+  playingta.value = window.localStorage.getItem("playingta_" + id) || "";
+  playedta.value = window.localStorage.getItem("playedta_" + id) || "";
   if (!playingta.value.length) {
-    playingta.value = (stories[ev] || "").toString();
+    playingta.value = (
+      (stories.find(s => s.id == id || "") || {}).text || ""
+    ).toString();
     playedta.value = "";
-    window.localStorage.setItem("playingta_" + ev, playingta.value);
-    window.localStorage.setItem("playedta_" + ev, "");
+    window.localStorage.setItem("playingta_" + id, playingta.value);
+    window.localStorage.setItem("playedta_" + id, "");
   }
+  localStorage.setItem("userstories", JSON.stringify(userstories || []));
 };
-var stories = [];
-for (let i = 0; i < 18; i++) {
-  window
-    .fetch("/tts/resource/stories/" + i + ".txt")
-    .then(res => res.text())
-    .then(r => (stories[i] = r));
-}
-var voices = [];
+userstories = JSON.parse(localStorage.getItem("userstories") || "[]");
+stories = [...stories, ...userstories];
+
+fetch("/tts/resource/stories.json")
+  .then(res => res.json())
+  .then(r =>
+    Promise.all(
+      r.map(
+        (title, id) =>
+          new Promise(resolve =>
+            fetch("/tts/resource/stories/" + title)
+              .then(res => res.text())
+              .then(text =>
+                resolve(stories.push({ id, type: "server", title, text }))
+              )
+          )
+      )
+    ).then(() => {
+      stories.sort((a, b) => (a.id > b.id ? 1 : -1));
+      let sel2 = document.getElementById("storyval");
+      stories.forEach(v => {
+        var opt = document.createElement("option");
+        opt.appendChild(document.createTextNode(v.title));
+        opt.value = v.id;
+        sel2.appendChild(opt);
+      });
+    })
+  );
+
 window.onload = () => {
   getvoicesinterval = setInterval(function() {
     voices = speechSynthesis.getVoices();
-    if(voices.length){
+    if (voices.length) {
       listvoices();
       clearInterval(getvoicesinterval);
     }
