@@ -1,153 +1,91 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>play</title>
-  </head>
-  <body style="margin:0;padding:10px;">
-    <div
-      style="position:fixed;top:0;left:0;padding: 10px;display: flex;justify-content: center;width:100%;flex-wrap: wrap;"
-    >
-      <div style="margin-bottom:10px;">
-        <button onclick="play()">Start</button>
+<head>
+  <meta charset="utf-8">
+  <title>Ztts</title>
+  <link rel="manifest" href="/tts/manifest.json">
+  <link rel="stylesheet" href="/tts/css/style.css">
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="apple-touch-icon" href="images/hello-icon-152.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="white"/>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="Ztts">
+  <meta name="msapplication-TileImage" content="images/hello-icon-144.png">
+  <meta name="msapplication-TileColor" content="#FFFFFF">
+</head>
+<body style="margin:0;padding:10px;">
+  <div
+    style="position:fixed;top:0;left:0;padding: 10px;display: flex;justify-content: center;width:100%;flex-wrap: wrap;"
+  >
+    <div style="margin-bottom:10px;">
+      <button onclick="play()">Start</button>
 
-        <button onclick="speechSynthesis.cancel();stoppedplayback=true;savecur(true);">
-          Stop
-        </button>
-        
-        <select name="" id="storyval" onchange="savedstories(this.value)" onfocus="this.onchange()">
-            <option value="0">0</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-            <option value="8">8</option>
-            <option value="9">9</option>
-            <option value="10">10</option>
-            <option value="11">11</option>
-            <option value="12">12</option>
-            <option value="13">13</option>
-            <option value="14">14</option>
-            <option value="15">15</option>
-            <option value="16">16</option>
-            <option value="17">17</option>
-          </select>
-      </div>
-      <div>
-        <input
-          style="width:40px;"
-          type="number"
-          name="rate"
-          step="0.1"
-          id="speakrate"
-          value="1.3"
-        />
-        <!-- <button style="margin-left:10px;" onclick="savecur()">save</button>
-        <button onclick="loadprev()">load</button> -->
+      <button
+        onclick="speechSynthesis.cancel();stoppedplayback=true;savecur(true);"
+      >
+        Stop
+      </button>
 
-        <button style="margin-left:10px;" onclick="reset()">Reset</button>
-        <button style="margin-left:10px;" onclick="clearall()">clear</button>
-        
-      </div>
+      <select
+        name=""
+        id="storyval"
+        onchange="savedstories(this.value)"
+        onfocus="this.onchange()"
+      >
+        <option value="0">0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+        <option value="13">13</option>
+        <option value="14">14</option>
+        <option value="15">15</option>
+        <option value="16">16</option>
+        <option value="17">17</option>
+      </select>
     </div>
+    <div>
+      <input
+        style="width:40px;"
+        type="number"
+        name="rate"
+        step="0.1"
+        id="speakrate"
+        value="1.3"
+      />
+      <!-- <button style="margin-left:10px;" onclick="savecur()">save</button>
+      <button onclick="loadprev()">load</button> -->
 
-    <div style="margin-top:60px;">
-      playing
-      <textarea
-        rows="10"
-        id="playing"
-        class="playing"
-        style="min-width:100%;max-width: 100%;"
-      ></textarea>
-      played
-      <textarea
-        rows="10"
-        id="played"
-        class="playing"
-        style="min-width:100%;max-width: 100%;"
-      ></textarea>
+      <button style="margin-left:10px;" onclick="reset()">Reset</button>
+      <button style="margin-left:10px;" onclick="clearall()">clear</button>
     </div>
-  </body>
-  <script>
-    var playingta = document.getElementById("playing");
-    var playedta = document.getElementById("played");
-    var playingtext;
-    var toplaytext;
-    var rate;
-    var stoppedplayback = false;
+  </div>
 
-    var play = function(frombegining) {
-      if (stoppedplayback) {
-        speechSynthesis.cancel();
-        stoppedplayback = false;
-        return;
-      }
-      playingta = document.getElementById("playing");
-      playedta = document.getElementById("played");
-      if (!playingta.value.length) return;
-      var msg = new SpeechSynthesisUtterance();
-      rate = document.getElementById("speakrate").value;
-      
-      
-        let firstsentence = Math.min(playingta.value.indexOf("."),playingta.value.indexOf("\n"));
-        
-      firstsentence =
-        firstsentence == -1 ? playingta.value.length : firstsentence + 1;
-      msg.text = playingta.value.slice(0, firstsentence);
-      msg.rate = rate;
-      msg.onend = function(ev) {
-        if (!stoppedplayback) {
-          playedta.value += playingta.value.slice(0, firstsentence);
-          playingta.value = playingta.value.slice(firstsentence);
-        }
-        return play();
-      };
-      speechSynthesis.speak(msg);
-    };
-    var loadprev = function() {
-      let ev = document.getElementById("storyval").value;
-      playingta.value = window.localStorage.getItem("playingta_"+ev);
-      playedta.value = window.localStorage.getItem("playedta_"+ev);
-    };
-    var savecur = function(hidden) {
-      let ev = document.getElementById("storyval").value;
-      window.localStorage.setItem("playingta_"+ev, playingta.value);
-      window.localStorage.setItem("playedta_"+ev, playedta.value);
-      !hidden && alert("saved");
-    };
-    var clearall = function() {
-      playingta.value = "";
-      playedta.value = "";
-    };
-    var reset = function(){
-      if (!confirm("sure to reset this text?")) return;
-      let ev = document.getElementById("storyval").value;
-      playingta.value = (stories[ev] || "").toString();;
-      playedta.value = "";
-      window.localStorage.setItem("playingta_"+ev, "");
-      window.localStorage.setItem("playedta_"+ev, "");
-    }
-    savedstories = function(ev) {
-      playingta.value = window.localStorage.getItem("playingta_"+ev)||"";
-      playedta.value = window.localStorage.getItem("playedta_"+ev)||"";
-      if(!playingta.value.length){
-        playingta.value = (stories[ev] || "").toString();
-        playedta.value = "";
-        window.localStorage.setItem("playingta_"+ev, playingta.value);
-        window.localStorage.setItem("playedta_"+ev,"");
-      }
-    };
-    var stories = [];
-    for(let i =0;i<18;i++){
-    window
-      .fetch("resource/stories/"+i+".txt")
-      .then(res => res.text())
-      .then(r => (stories[i] = r));
-
-    }
-  </script>
+  <div style="margin-top:60px;">
+    playing
+    <textarea
+      rows="10"
+      id="playing"
+      class="playing"
+      style="min-width:100%;max-width: 100%;"
+    ></textarea>
+    played
+    <textarea
+      rows="10"
+      id="played"
+      class="playing"
+      style="min-width:100%;max-width: 100%;"
+    ></textarea>
+  </div>
+  <script src="/tts/js/main.js"></script>
+</body>
 </html>
