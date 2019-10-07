@@ -46,9 +46,11 @@
           id="speakrate"
           value="1.3"
         />
-        <button style="margin-left:10px;" onclick="savecur()">save</button>
-        <button onclick="loadprev()">load</button>
-        <button style="margin-left:10px;" onclick="clearall()">Reset</button>
+        <!-- <button style="margin-left:10px;" onclick="savecur()">save</button>
+        <button onclick="loadprev()">load</button> -->
+
+        <button style="margin-left:10px;" onclick="reset()">Reset</button>
+        <button style="margin-left:10px;" onclick="clearall()">clear</button>
         
       </div>
     </div>
@@ -118,13 +120,17 @@
       !hidden && alert("saved");
     };
     var clearall = function() {
-      if (!confirm("sure to clear this text?")) return;
-      let ev = document.getElementById("storyval").value;
       playingta.value = "";
+      playedta.value = "";
+    };
+    var reset = function(){
+      if (!confirm("sure to reset this text?")) return;
+      let ev = document.getElementById("storyval").value;
+      playingta.value = (stories[ev] || "").toString();;
       playedta.value = "";
       window.localStorage.setItem("playingta_"+ev, "");
       window.localStorage.setItem("playedta_"+ev, "");
-    };
+    }
     savedstories = function(ev) {
       playingta.value = window.localStorage.getItem("playingta_"+ev)||"";
       playedta.value = window.localStorage.getItem("playedta_"+ev)||"";
