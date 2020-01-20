@@ -136,7 +136,7 @@ export default {
 
 #header {
   // height: 30px;
-  background-color: #287cde;
+  background-color: #f72f61;
   z-index: 99;
   position: absolute;
   width: 100%;

@@ -41,8 +41,8 @@
   "scope": "/tts/",
   "start_url": "/tts/",
   "display": "standalone",
-  "background_color": "#ff2428",
-  "theme_color": "#ff2428",
+  "background_color": "#f72f61",
+  "theme_color": "#f72f61",
   "permissions": [
     {
       "fileSystem": ["write", "retainEntries", "directory"]
