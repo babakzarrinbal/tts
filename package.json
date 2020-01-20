@@ -1,0 +1,42 @@
+{
+  "name": "tts",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
+  },
+  "dependencies": {
+    "@google/markerclusterer": "^1.0.3",
+    "bootstrap": "^4.3.1",
+    "dateformat": "^3.0.3",
+    "draggable": "^4.2.0",
+    "fastclick": "^1.0.6",
+    "jquery": "^3.3.1",
+    "luxon": "^1.16.0",
+    "pdfjs-dist": "^2.2.228",
+    "register-service-worker": "^1.5.2",
+    "request": "^2.88.0",
+    "socket.io-client": "^2.2.0",
+    "toastr": "^2.1.4",
+    "vue": "^2.6.6",
+    "vue-datetime": "^1.0.0-beta.10",
+    "vue-router": "^3.0.1",
+    "vue-toastr-2": "0.0.10",
+    "vue2-hammer": "^2.1.2",
+    "weekstart": "^1.0.0"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^3.4.0",
+    "@vue/cli-plugin-eslint": "^3.4.0",
+    "@vue/cli-plugin-pwa": "^3.4.0",
+    "@vue/cli-service": "^3.4.0",
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.8.0",
+    "eslint-plugin-vue": "^5.0.0",
+    "node-sass": "^4.9.0",
+    "sass-loader": "^7.1.0",
+    "vue-template-compiler": "^2.5.21"
+  }
+}
