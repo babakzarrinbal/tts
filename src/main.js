@@ -1,26 +1,13 @@
 // my own proto functions
-require("./utils/prototypes");
+import "./utils/prototypes";
 import serverconfig from "./config";
-window.serverconfig = serverconfig;
+window.serverconfig = serverconfig; 
 
 // bootstrap css
 import "bootstrap/dist/css/bootstrap.min.css";
 
-// dateformatter
-// var dateFormat = require("dateformat");
-// Date.prototype.format = function(forma) {
-//   return dateFormat(this, forma);
-// };
-
-//toastr
-// window.toastr = require("toastr");
-// window.toastr.options.preventDuplicates = true;
-// import "toastr/build/toastr.min.css";
-
-//socket
-// import sio from "./connections/socket";
-
-//http
+import {slideToOpen} from "./utils/slideToOpen";
+slideToOpen();
 import http from "./connections/http";
 
 // custom styles

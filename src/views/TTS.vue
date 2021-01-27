@@ -1,39 +1,69 @@
 <template>
-  <div class="container-fluid pl-0 pr-0" style="margin:0;width:100%;max-width: 100%;">
-    <div class="pages">
-      <div v-if="story.id" class="prev pbtn" @click="selectstory(story.id-1)">
-        <img
-          src="img/ttsicons/next.svg"
-          width="25px"
-          height="25px"
-          alt="prev"
-          style="transform:rotateZ(180deg)"
-          class="btnimg"
-        />
+  <div
+    class="container-fluid pl-0 pr-0"
+    style="margin: 0; width: 100%; max-width: 100%"
+  >
+    <div class="pages justify-content-between">
+      <div class="float-left title pl-3" @click="changetitle()">
+        {{ story.title || "" }}
       </div>
-      <span v-if="story.id">{{ stories.findIndex(s=>s.id==story.id)+1}} / {{(stories||[]).length }}</span>
-      <div v-if="story.id" class="prev pbtn" @click="selectstory(story.id+1)">
-        <img src="img/ttsicons/next.svg" width="25px" height="25px" alt="prev" class="btnimg" />
+      <div class="d-flex "> 
+        <div
+          v-if="story.id"
+          class="prev pbtn "
+          @click="selectstory(story.id - 1)"
+        >
+          <img
+            src="img/ttsicons/next.svg"
+            width="25px"
+            height="25px"
+            alt="prev"
+            style="transform: rotateZ(180deg)"
+            class="btnimg"
+          />
+        </div>
+        <span v-if="story.id"
+          >{{ stories.findIndex((s) => s.id == story.id) + 1 }} /
+          {{ (stories || []).length }}</span
+        >
+        <div
+          v-if="story.id"
+          class="prev pbtn"
+          @click="selectstory(story.id + 1)"
+        >
+          <img
+            src="img/ttsicons/next.svg"
+            width="25px"
+            height="25px"
+            alt="prev"
+            class="btnimg"
+          />
+        </div>
       </div>
       <span v-if="!story.id">New</span>
     </div>
     <textarea
       ref="textarea"
-      :style="{'fontSize':pbsettings.fontsize+'px'}"
+      :style="{ fontSize: pbsettings.fontsize + 'px' }"
       id="texteditor"
-      @click="showpopup=null"
+      @click="showpopup = null"
       v-model="currstory"
       :readonly="pbsettings.follow"
     ></textarea>
     <div id="controllers">
-      <div class="title" @click="changetitle()">{{story.title||""}}</div>
-      <div class="palyback">
+      <div class="palyback overflow-auto">
         <div class="previous reverse button" @click="prev()">
           <img src="img/ttsicons/next.svg" alt="prev" class="btnimg" />
         </div>
-        <div class="playpause button" @click="showpopup= null;play()">
+        <div
+          class="playpause button"
+          @click="
+            showpopup = null;
+            play();
+          "
+        >
           <img
-            :src="'img/ttsicons/'+(playing?'pause':'play')+'.svg'"
+            :src="'img/ttsicons/' + (playing ? 'pause' : 'play') + '.svg'"
             alt="play/pause"
             class="btnimg"
           />
@@ -41,36 +71,50 @@
         <div class="next button" @click="next()">
           <img src="img/ttsicons/next.svg" alt="next " class="btnimg" />
         </div>
-        <div class="goto reverse button" @click="goto()">
-          <img src="img/ttsicons/refresh.svg" alt="goto button" class="btnimg" />
+        <div class="playbacksettings button" @click="fullscreen(true)">
+          <img
+            src="img/ttsicons/shield.svg"
+            alt="playbacksettings"
+            class="btnimg"
+          />
         </div>
-      </div>
+        <div class="goto reverse button" @click="goto()">
+          <img
+            src="img/ttsicons/refresh.svg"
+            alt="goto button"
+            class="btnimg"
+          />
+        </div>
 
-      <div class="menues">
+      <!-- </div> -->
+
+      <!-- <div class="menues"> -->
         <div
           class="list button"
-          :class="{'active': showpopup== 'list'}"
-          @click="showpopup = showpopup== 'list'?null:'list'"
+          :class="{ active: showpopup == 'list' }"
+          @click="showpopup = showpopup == 'list' ? null : 'list'"
         >
           <img src="img/ttsicons/list.svg" alt="list" class="btnimg" />
         </div>
         <div
           class="bookmarks button"
-          :class="{'active': showpopup == 'bookmark'}"
-          @click="showpopup = showpopup == 'bookmark' ? null: 'bookmark'"
+          :class="{ active: showpopup == 'bookmark' }"
+          @click="showpopup = showpopup == 'bookmark' ? null : 'bookmark'"
         >
           <img src="img/ttsicons/bookmark.svg" alt="bookmarks" class="btnimg" />
         </div>
         <div
           class="playbacksettings button"
-          :class="{'active': showpopup== 'setting'}"
-          @click="showpopup = showpopup == 'setting' ? null: 'setting'"
+          :class="{ active: showpopup == 'setting' }"
+          @click="showpopup = showpopup == 'setting' ? null : 'setting'"
         >
-          <img src="img/ttsicons/settings.svg" alt="playbacksettings" class="btnimg" />
+          <img
+            src="img/ttsicons/settings.svg"
+            alt="playbacksettings"
+            class="btnimg"
+          />
         </div>
-        <div class="playbacksettings button" @click="fullscreen(true)">
-          <img src="img/ttsicons/shield.svg" alt="playbacksettings" class="btnimg" />
-        </div>
+        
       </div>
     </div>
     <div v-if="showpopup == 'setting'" class="pbsettingspopup">
@@ -78,24 +122,34 @@
       <div class="inputs">
         <div class="checkbox">
           <label>
-            <input type="checkbox" v-model="pbsettings.follow" />Follow (lock the text)
+            <input type="checkbox" v-model="pbsettings.follow" />Follow (lock
+            the text)
           </label>
         </div>
         <div class="form-group">
-          <label style="margin:0;">Select Voice:</label>
+          <label style="margin: 0">Select Voice:</label>
           <select
             class="form-control"
             v-model="pbsettings.voiceindex"
-            @change="pbsettings.voice = pbsettings.voices[pbsettings.voiceindex]"
+            @change="
+              pbsettings.voice = pbsettings.voices[pbsettings.voiceindex]
+            "
           >
-            <option v-for="(v, i) in pbsettings.voices" :value="i" :key="i">{{v.name}}</option>
+            <option v-for="(v, i) in pbsettings.voices" :value="i" :key="i">
+              {{ v.name }}
+            </option>
           </select>
         </div>
         <div class="form-group numberinput">
           <label for="speed">Speed:</label>
           <div
             class="decrease"
-            @click="pbsettings.speed =(pbsettings.speed- 0.1)<0?0:(pbsettings.speed - 0.1).round(1) "
+            @click="
+              pbsettings.speed =
+                pbsettings.speed - 0.1 < 0
+                  ? 0
+                  : (pbsettings.speed - 0.1).round(1)
+            "
           >
             <img src="img/ttsicons/minus.svg" class="signimg" />
           </div>
@@ -104,20 +158,28 @@
             class="form-control ninput"
             step="0.1"
             min="0"
-            @change="pbsettings.speed = pbsettings.speed<0?0 :pbsettings.speed;"
+            @change="
+              pbsettings.speed = pbsettings.speed < 0 ? 0 : pbsettings.speed
+            "
             id="speed"
             v-model="pbsettings.speed"
           />
           <div
             class="increase"
-            @click="pbsettings.speed =pbsettings.speed<0?0:(pbsettings.speed + 0.1).round(1) "
+            @click="
+              pbsettings.speed =
+                pbsettings.speed < 0 ? 0 : (pbsettings.speed + 0.1).round(1)
+            "
           >
             <img src="img/ttsicons/plus.svg" class="signimg" />
           </div>
         </div>
         <div class="form-group numberinput">
           <label for="pich">Pitch:</label>
-          <div class="decrease" @click="pbsettings.pitch>0 &&  pbsettings.pitch--; ">
+          <div
+            class="decrease"
+            @click="pbsettings.pitch > 0 && pbsettings.pitch--"
+          >
             <img src="img/ttsicons/minus.svg" class="signimg" />
           </div>
           <input
@@ -127,10 +189,20 @@
             step="1"
             min="0"
             max="2"
-            @change="pbsettings.pitch = pbsettings.pitch<0?0 :pbsettings.pitch>2?2 :pbsettings.pitch"
+            @change="
+              pbsettings.pitch =
+                pbsettings.pitch < 0
+                  ? 0
+                  : pbsettings.pitch > 2
+                  ? 2
+                  : pbsettings.pitch
+            "
             v-model="pbsettings.pitch"
           />
-          <div class="increase" @click="pbsettings.pitch<2 && pbsettings.pitch++">
+          <div
+            class="increase"
+            @click="pbsettings.pitch < 2 && pbsettings.pitch++"
+          >
             <img src="img/ttsicons/plus.svg" class="signimg" />
           </div>
         </div>
@@ -155,26 +227,28 @@
     </div>
 
     <div v-if="showpopup == 'bookmark'" class="bookmarkspopup">
-      <h5 style="position:relative;">
+      <h5 style="position: relative">
         bookmarks
         <div
           class="btn btn-success py-0"
-          style="position:absolute;top:0;left:0;"
+          style="position: absolute; top: 0; left: 0"
           @click="addbookmark"
-        >ADD</div>
+        >
+          ADD
+        </div>
       </h5>
-      <ul class="list-group pt-1" style="border-top:1px solid gray;">
+      <ul class="list-group pt-1" style="border-top: 1px solid gray">
         <li
           class="list-group-item"
-          :class="{'active':b.active}"
-          v-for="(b,i) in story.bookmarks"
+          :class="{ active: b.active }"
+          v-for="(b, i) in story.bookmarks"
           :key="i"
           @click="gotobookmark(i)"
         >
           <span class="button" @click="playbookmark(i)">
             <img src="img/ttsicons/play-full.svg" alt="play" class="btnimg" />
           </span>
-          <span class="title">{{b.title}}</span>
+          <span class="title">{{ b.title }}</span>
           <span class="close" @click.stop="removebookmark(i)">X</span>
         </li>
       </ul>
@@ -185,14 +259,19 @@
         Stories
         <div
           class="btn py-0"
-          style="position:absolute; top:-6px;right:-3px;"
-          :class="{'btn-primary':pbsettings.listactions,'btn-light': !pbsettings.listactions}"
+          style="position: absolute; top: -6px; right: -3px"
+          :class="{
+            'btn-primary': pbsettings.listactions,
+            'btn-light': !pbsettings.listactions,
+          }"
           @click="pbsettings.listactions = !pbsettings.listactions"
-        >Actions</div>
+        >
+          Actions
+        </div>
       </h5>
       <input
         type="file"
-        style="display:none"
+        style="display: none"
         ref="fileinput"
         @change="importstory($event)"
         multiple="true"
@@ -201,63 +280,153 @@
       />
       <div
         class="actions flexcenter mb-1 justify-content-between pt-1"
-        style="border-top:solid 1px gray"
+        style="border-top: solid 1px gray"
         v-if="pbsettings.listactions"
       >
-        <div class="left flexcenter" style="flex-direction:column;align-items: flex-start;">
-          <div class="listbtns btn btn-info mb-1 py-0" @click="newstory()">New</div>
+        <div
+          class="left flexcenter"
+          style="flex-direction: column; align-items: flex-start"
+        >
+          <div class="listbtns btn btn-info mb-1 py-0" @click="newstory()">
+            New
+          </div>
           <div
             class="listbtns btn btn-primary mb-1 py-0"
             @click="$refs.fileinput.click()"
-          >Import file</div>
-          <div class="listbtns btn btn-primary mb-1 py-0" @click="importfromurl()">Import url</div>
+          >
+            Import file
+          </div>
+          <div
+            class="listbtns btn btn-primary mb-1 py-0"
+            @click="importfromurl()"
+          >
+            Import url
+          </div>
         </div>
-        <div class="right flexcenter" style="flex-direction:column;align-items: flex-end;">
-          <div class="listbtns btn btn-success mb-1 py-0" @click="savestorycontent()">Save</div>
-          <div class="listbtns btn btn-warning mb-1 py-0" @click="exportalltexts()">Export all</div>
-          <div class="listbtns btn btn-danger mb-1 py-0" @click="removeall(true)">Remove all</div>
+        <div
+          class="right flexcenter"
+          style="flex-direction: column; align-items: flex-end"
+        >
+          <div
+            class="listbtns btn btn-success mb-1 py-0"
+            @click="savestorycontent()"
+          >
+            Save
+          </div>
+          <div
+            class="listbtns btn btn-warning mb-1 py-0"
+            @click="exportalltexts()"
+          >
+            Export all
+          </div>
+          <div
+            class="listbtns btn btn-danger mb-1 py-0"
+            @click="removeall(true)"
+          >
+            Remove all
+          </div>
         </div>
       </div>
       <ul
         class="list-group pt-1"
-        style="border-top:1px solid gray;"
-        :style="{height:pbsettings.listactions?'calc(100% - 138px)':'calc(100% - 32px)'}"
+        style="border-top: 1px solid gray"
+        :style="{
+          height: pbsettings.listactions
+            ? 'calc(100% - 138px)'
+            : 'calc(100% - 32px)',
+        }"
       >
         <li
           class="list-group-item"
-          :class="{'active':s.active}"
-          v-for="(s,i) in stories"
+          :class="{ active: s.active }"
+          v-for="(s, i) in stories"
           :key="i"
           @click="selectstory(s.id)"
         >
-          <span class="title">{{s.title}}</span>
+          <span class="title">{{ s.title }}</span>
           <span class="close" @click.stop="removestory(s)">X</span>
         </li>
       </ul>
     </div>
     <div
       class="position-fixed d-flex justify-content-center align-items-center overflow-hidden"
-      :style="'height:'+(isfullscreen?'100vh;':'0px !important;')+'width:'+ (isfullscreen?'100vw;':'0;')"
-      style="z-index:100;top:0;background-color:black;"
-      @click="fullscreen(false)"
+      :style="
+        'height:' +
+        (isfullscreen ? '100vh;' : '0px !important;') +
+        'width:' +
+        (isfullscreen ? '100vw;' : '0;')
+      "
+      style="
+        z-index: 100;
+        top: 0;
+        background-color: black;
+        height: 100vh;
+        width: 100vw;
+      "
       ref="fullscreenele"
     >
-    <div class="controllers d-flex ">
-      <div class="previous reverse button p-4" @click.stop="prev()">
-          <img src="img/ttsicons/next-w.svg" alt="prev" class="btnimg" style="transform: rotateZ(180deg);width:50px;height:50px;"/>
-        </div>
-        <div class="playpause button p-4" @click.stop="showpopup= null;play()">
+      <div class="controllers d-flex">
+        <!-- <div class="previous reverse button p-4" @click.stop="prev()">
           <img
-            :src="'img/ttsicons/'+(playing?'pause':'play')+'-w.svg'"
+            src="img/ttsicons/next-w.svg"
+            alt="prev"
+            class="btnimg"
+            style="transform: rotateZ(180deg); width: 50px; height: 50px"
+          />
+        </div> -->
+        <div
+          class="playpause button p-4"
+          @click.stop="
+            showpopup = null;
+            play();
+          "
+        >
+          <img
+            :src="'img/ttsicons/' + (playing ? 'pause' : 'play') + '-w.svg'"
             alt="play/pause"
             class="btnimg"
-            style="width:50px;height:50px;"
+            style="width: 90px; height: 90px"
           />
         </div>
-        <div class="next button p-4" @click.stop="next()">
-          <img src="img/ttsicons/next-w.svg" alt="next " class="btnimg" style="width:50px;height:50px;"/>
-        </div>
-    </div>
+        <!-- <div class="next button p-4" @click.stop="next()">
+          <img
+            src="img/ttsicons/next-w.svg"
+            alt="next "
+            class="btnimg"
+            style="width: 50px; height: 50px"
+          />
+        </div> -->
+      </div>
+      <div
+        class="text-center slider position-absolute p-1 bzstoContainer"
+        style="
+          bottom: 20px;
+          height: 60px;
+          width: 300px;
+          max-width:calc(100vw - 20px);
+          border: 2px solid gray;
+          border-radius: 15px;
+        "
+      >
+        <span
+          style="
+            position: absolute;
+            top: 10px;
+            font-weight: bold;
+            left: 99px;
+            font-size: 25px;
+            color: #ffffff70;
+          "
+          >Slide To Unlock</span
+        >
+        <img
+          ref="slider"
+          @unlock="fullscreen(false)"
+          draggable="false"
+          class="bzsto position-relative float-left"
+          src="img/icon/arrow.png"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -268,7 +437,7 @@ export default {
   data() {
     let stories = JSON.parse(window.localStorage.getItem("ttsstories") || "[]");
     stories.sort((a, b) => (a.id > b.id ? 1 : -1));
-    let story = stories.find(s => s.active) || {};
+    let story = stories.find((s) => s.active) || {};
     let currstory = story.id
       ? window.localStorage.getItem("ttsstory_" + story.id) || ""
       : "";
@@ -282,7 +451,7 @@ export default {
       playing: false,
       currentspeechutterance: null,
       showpopup: null,
-      pbsettings: {
+      pbsettings: window.localStorage.getItem('tts-pbsetting') ||{
         follow: true,
         voiceindex: 0,
         voices: [],
@@ -291,10 +460,11 @@ export default {
         pitch: 1,
         fontsize: 16,
         listactions: false,
-        bmactions: false
-      }
+        bmactions: false,
+      },
     };
   },
+  mounted() {},
   created() {
     let getvoicestry = 0;
     let _self = this;
@@ -326,18 +496,19 @@ export default {
       }
       let ele = this.$refs.fullscreenele;
       ele.requestFullscreen();
+      this.$refs.slider.style.transform = "translate(0px,0px)";
     },
     queryhandeler(q) {
       if (!q.url) return;
       let router = this.$router;
       router.replace({
         ...router.currentRoute,
-        query: null
+        query: null,
       });
       this.importfromurl(q.url);
     },
     async selectstory(id) {
-      let thisstory = this.stories.find(s => s.id == id);
+      let thisstory = this.stories.find((s) => s.id == id);
       if (!thisstory) return;
       await this.savestory(false, true);
       if (id == this.story.id) {
@@ -419,7 +590,7 @@ export default {
       msg.rate = this.pbsettings.speed;
       msg.pitch = this.pbsettings.pitch;
       let _self = this;
-      msg.onend = function() {
+      msg.onend = function () {
         if (_self.playing) _self.story.position = firstsentence;
         return _self.playingfunc();
       };
@@ -475,7 +646,7 @@ export default {
     },
     async prev() {
       if (!this.story.id) return;
-      await new Promise(resolve => {
+      await new Promise((resolve) => {
         if (this.speech.speaking) {
           window.a = this.currentspeechutterance;
           if (!this.currentspeechutterance) return resolve();
@@ -540,7 +711,7 @@ export default {
     },
     async removestory(s, quiet) {
       if (!quiet && !confirm("are you sure to delete \n" + s.title)) return;
-      this.stories = this.stories.filter(st => s.id != st.id);
+      this.stories = this.stories.filter((st) => s.id != st.id);
       window.localStorage.removeItem("ttsstory_" + s.id);
       if (this.story.id == s.id) {
         this.story = {};
@@ -565,7 +736,7 @@ export default {
             reject = j;
           });
 
-          fileReader.onload = async function() {
+          fileReader.onload = async function () {
             var typedarray = new Uint8Array(this.result);
             let pdfjs = await import("pdfjs-dist/webpack");
             let pdf = await pdfjs.getDocument(typedarray);
@@ -574,11 +745,11 @@ export default {
             for (var j = 1; j < maxPages; j++) {
               var page = pdf.getPage(j);
               countPromises.push(
-                page.then(function(page) {
+                page.then(function (page) {
                   var textContent = page.getTextContent();
-                  return textContent.then(function(text) {
+                  return textContent.then(function (text) {
                     return text.items
-                      .map(function(s) {
+                      .map(function (s) {
                         return s.str;
                       })
                       .join("");
@@ -587,9 +758,7 @@ export default {
               );
             }
             // Wait for all pages and join text
-            return Promise.all(countPromises)
-              .then(resolve)
-              .catch(reject);
+            return Promise.all(countPromises).then(resolve).catch(reject);
           };
           fileReader.readAsArrayBuffer(file);
           try {
@@ -636,7 +805,7 @@ export default {
               : url;
           let text = await fetch(
             "https://cors-anywhere.herokuapp.com/" + url
-          ).then(r => r.text());
+          ).then((r) => r.text());
           let title = text
             .match(/<h1[^>]*>(.|[\n\r])*?<\/h1>/)[0]
             .replace(/<[^>]*>/g, "");
@@ -659,7 +828,7 @@ export default {
             for (let i = 2; i <= lastpage; i++) {
               let text = await fetch(
                 "https://cors-anywhere.herokuapp.com/" + url + "?page=" + i
-              ).then(r => r.text());
+              ).then((r) => r.text());
               content +=
                 "\n" +
                 text
@@ -678,7 +847,7 @@ export default {
         } else {
           let text = await fetch(
             "https://cors-anywhere.herokuapp.com/" + url
-          ).then(r => r.text());
+          ).then((r) => r.text());
           let result = text
             .match(/<body[^>]*>(.|[\n\r])*<\/body>/)[0] // get body text
             .replace(/<script([\S\s]*?)>([\S\s]*?)<\/script>/gi, "") // remove script tags
@@ -729,7 +898,7 @@ export default {
       if (!filename) return;
       let stories = [...this.stories];
       await this.savestory(true, true);
-      stories.forEach(s => {
+      stories.forEach((s) => {
         s.story = s.id
           ? window.localStorage.getItem("ttsstory_" + s.id) || ""
           : "";
@@ -745,7 +914,7 @@ export default {
       if (alarm && !window.confirm("are you sure to remove all Stories?"))
         return;
       let _self = this;
-      this.stories.forEach(s => _self.removestory(s, true));
+      this.stories.forEach((s) => _self.removestory(s, true));
       this.stories = [];
       this.newstory();
     },
@@ -762,7 +931,7 @@ export default {
         a.download = filename;
         window.document.body.appendChild(a);
         a.click();
-        setTimeout(function() {
+        setTimeout(function () {
           window.document.body.removeChild(a);
           window.URL.revokeObjectURL(url);
         }, 0);
@@ -783,7 +952,7 @@ export default {
           ) + 1;
       let bookmark = {
         start: s,
-        end: e
+        end: e,
       };
       bookmark.title =
         ta.value.slice(
@@ -815,9 +984,16 @@ export default {
       let bookmark = this.story.bookmarks[i];
       this.story.position = bookmark.start;
       this.play(true);
+    },
+  },
+  watch: {
+    pbsettings:{
+      deep:true,
+      handler(val){
+        window.localStorage.setItem('tts-pbsetting',val);
+      }
     }
   },
-  computed: {}
 };
 </script>
 <style lang="scss" scoped>
@@ -862,6 +1038,7 @@ export default {
   .palyback {
     display: flex;
     background-color: #9d9df1;
+    width:100%;
     .button {
       width: 40px;
       height: 40px;
