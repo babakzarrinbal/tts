@@ -7,10 +7,10 @@
       <div class="float-left title pl-3" @click="changetitle()">
         {{ story.title || "" }}
       </div>
-      <div class="d-flex "> 
+      <div class="d-flex">
         <div
           v-if="story.id"
-          class="prev pbtn "
+          class="prev pbtn"
           @click="selectstory(story.id - 1)"
         >
           <img
@@ -86,9 +86,9 @@
           />
         </div>
 
-      <!-- </div> -->
+        <!-- </div> -->
 
-      <!-- <div class="menues"> -->
+        <!-- <div class="menues"> -->
         <div
           class="list button"
           :class="{ active: showpopup == 'list' }"
@@ -114,7 +114,6 @@
             class="btnimg"
           />
         </div>
-        
       </div>
     </div>
     <div v-if="showpopup == 'setting'" class="pbsettingspopup">
@@ -403,7 +402,7 @@
           bottom: 20px;
           height: 60px;
           width: 300px;
-          max-width:calc(100vw - 20px);
+          max-width: calc(100vw - 20px);
           border: 2px solid gray;
           border-radius: 15px;
         "
@@ -451,17 +450,19 @@ export default {
       playing: false,
       currentspeechutterance: null,
       showpopup: null,
-      pbsettings: window.localStorage.getItem('tts-pbsetting') ||{
-        follow: true,
-        voiceindex: 0,
-        voices: [],
-        voice: null,
-        speed: 1.1,
-        pitch: 1,
-        fontsize: 16,
-        listactions: false,
-        bmactions: false,
-      },
+      pbsettings: window.localStorage.getItem("tts-pbsetting")
+        ? JSON.parse(window.localStorage.getItem("tts-pbsetting"))
+        : {
+            follow: true,
+            voiceindex: 0,
+            voices: [],
+            voice: null,
+            speed: 1.1,
+            pitch: 1,
+            fontsize: 16,
+            listactions: false,
+            bmactions: false,
+          },
     };
   },
   mounted() {},
@@ -987,12 +988,12 @@ export default {
     },
   },
   watch: {
-    pbsettings:{
-      deep:true,
-      handler(val){
-        window.localStorage.setItem('tts-pbsetting',val);
-      }
-    }
+    pbsettings: {
+      deep: true,
+      handler(val) {
+        window.localStorage.setItem("tts-pbsetting", JSON.stringify(val));
+      },
+    },
   },
 };
 </script>
@@ -1038,7 +1039,7 @@ export default {
   .palyback {
     display: flex;
     background-color: #9d9df1;
-    width:100%;
+    width: 100%;
     .button {
       width: 40px;
       height: 40px;
