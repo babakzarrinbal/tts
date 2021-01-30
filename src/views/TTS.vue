@@ -789,24 +789,47 @@ export default {
       }
       return;
     },
-    async importfromurl(url) {
+    async importfromurl(url, chapter, baseurl) {
       url = url || "";
       while (url === "") {
         url = window.prompt("url to fetch");
       }
       if (!url) return;
+
       try {
-        if (url.includes("literotica.com") && window.confirm("whole Story?")) {
-          if (window.confirm("clear all?")) this.removeall(false);
+        if (url.includes("literotica.com")) {
+          if (chapter === undefined && window.confirm("clear all?"))
+            this.removeall(false);
 
           // https://www.literotica.com/s/a-trip-to-rome-1?page=2
           url =
             url.lastIndexOf("?") != -1
               ? url.slice(0, url.lastIndexOf("?"))
               : url;
+          if (chapter === undefined &&window.confirm('download all chapters?')) {
+            if (Number(url.slice(url.lastIndexOf("-") + 1))) {
+              return this.importfromurl(url.slice(0, url.lastIndexOf("-")), 0);
+            }
+          } else {
+            if (!chapter) {
+              await this.importfromurl(url + "-01", 1, url + "-");
+              await this.importfromurl(
+                url.slice(0, url.lastIndexOf("-")),
+                1,
+                url+ "-"
+              );
+              return;
+            }
+          }
+
           let text = await fetch(
             "https://cors-anywhere.herokuapp.com/" + url
           ).then((r) => r.text());
+          if (chapter) {
+            chapter++;
+            await this.importfromurl(baseurl + "0" + chapter, chapter, baseurl);
+            await this.importfromurl(baseurl + chapter, chapter, baseurl);
+          }
           let title = text
             .match(/<h1[^>]*>(.|[\n\r])*?<\/h1>/)[0]
             .replace(/<[^>]*>/g, "");
@@ -857,10 +880,12 @@ export default {
           await this.newstory(url, result);
           await this.savestorycontent(true);
         }
+        return true;
       } catch (e) {
         console.error(e);
+        return false;
       }
-      return;
+      
     },
     changetitle() {
       if (!this.story.id) return;
