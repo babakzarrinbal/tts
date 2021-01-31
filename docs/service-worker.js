@@ -1,4 +1,4 @@
-importScripts("/tts/precache-manifest.59d08586e335a7529caed9023657df96.js", "/tts/workbox-v3.6.3/workbox-sw.js");
+importScripts("/tts/precache-manifest.7bcba47b7f108149d871fd3dc21d3aff.js", "/tts/workbox-v3.6.3/workbox-sw.js");
 workbox.setConfig({modulePathPrefix: "/tts/workbox-v3.6.3"});
 // workbox.core.skipWaiting();
 // workbox.core.clientsClaim();

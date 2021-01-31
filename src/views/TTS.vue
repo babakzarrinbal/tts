@@ -874,7 +874,7 @@ export default {
           if (content && chapter) {
             chapter++;
             (await this.importfromurl(baseurl + chapter, chapter, baseurl)) ||
-              this.importfromurl(baseurl + "0" + chapter, chapter, baseurl);
+              (chapter<10 && this.importfromurl(baseurl + "0" + chapter, chapter, baseurl));
           }
           // console.log(pages);
         } else {
