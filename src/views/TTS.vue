@@ -806,33 +806,36 @@ export default {
             url.lastIndexOf("?") != -1
               ? url.slice(0, url.lastIndexOf("?"))
               : url;
-          if (chapter === undefined &&window.confirm('download all chapters?')) {
-            if (Number(url.slice(url.lastIndexOf("-") + 1))) {
-              return this.importfromurl(url.slice(0, url.lastIndexOf("-")), 0);
+          if (chapter === undefined) {
+            if (window.confirm("download all chapters?")) {
+              if (Number(url.slice(url.lastIndexOf("-") + 1))) {
+                return this.importfromurl(
+                  url.slice(0, url.lastIndexOf("-")),
+                  0
+                );
+              }
             }
           } else {
             if (!chapter) {
-              await this.importfromurl(url + "-01", 1, url + "-");
-              await this.importfromurl(
-                url.slice(0, url.lastIndexOf("-")),
-                1,
-                url+ "-"
+              return (
+                (await this.importfromurl(url + "-01", 1, url + "-")) ||
+                this.importfromurl(
+                  url.slice(0, url.lastIndexOf("-")),
+                  1,
+                  url + "-"
+                )
               );
-              return;
             }
           }
 
           let text = await fetch(
             "https://cors-anywhere.herokuapp.com/" + url
           ).then((r) => r.text());
-          if (chapter) {
-            chapter++;
-            await this.importfromurl(baseurl + "0" + chapter, chapter, baseurl);
-            await this.importfromurl(baseurl + chapter, chapter, baseurl);
-          }
+
           let title = text
             .match(/<h1[^>]*>(.|[\n\r])*?<\/h1>/)[0]
             .replace(/<[^>]*>/g, "");
+
           let content = text
             .match(
               /<div class="b-story-body-x x-r15"[^>]*>(.|[\n\r])*?<\/div>/
@@ -865,8 +868,14 @@ export default {
               // await this.savestorycontent(true);
             }
           }
+
           await this.newstory(title, content);
           await this.savestorycontent(true);
+          if (content && chapter) {
+            chapter++;
+            (await this.importfromurl(baseurl + chapter, chapter, baseurl)) ||
+              this.importfromurl(baseurl + "0" + chapter, chapter, baseurl);
+          }
           // console.log(pages);
         } else {
           let text = await fetch(
@@ -885,7 +894,6 @@ export default {
         console.error(e);
         return false;
       }
-      
     },
     changetitle() {
       if (!this.story.id) return;
