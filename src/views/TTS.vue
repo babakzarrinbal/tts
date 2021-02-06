@@ -587,7 +587,12 @@ export default {
         .slice(pos, firstsentence)
         .replace(/[.]{2,}/g, " . ")
         .replace(/\*/g, "");
-      if (this.pbsettings.voice) msg.voice = this.pbsettings.voice;
+      if (this.pbsettings.voice) {
+        msg.voice = this.pbsettings.voice;
+        msg.voiceURI = this.pbsettings.voice.voiceURI;
+        msg.lang = this.pbsettings.voice.lang;
+      }
+      console.log(this.pbsettings.voice);
       msg.rate = this.pbsettings.speed;
       msg.pitch = this.pbsettings.pitch;
       let _self = this;
@@ -596,7 +601,6 @@ export default {
         return _self.playingfunc();
       };
       this.currentspeechutterance = msg;
-
       window.speechSynthesis.speak(msg);
     },
     async newstory(title = "", text = "", pos = 0) {
@@ -874,7 +878,8 @@ export default {
           if (content && chapter) {
             chapter++;
             (await this.importfromurl(baseurl + chapter, chapter, baseurl)) ||
-              (chapter<10 && this.importfromurl(baseurl + "0" + chapter, chapter, baseurl));
+              (chapter < 10 &&
+                this.importfromurl(baseurl + "0" + chapter, chapter, baseurl));
           }
           // console.log(pages);
         } else {
