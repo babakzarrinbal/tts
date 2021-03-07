@@ -802,8 +802,8 @@ export default {
 
       try {
         if (url.includes("literotica.com")) {
-          if (chapter === undefined && window.confirm("clear all?"))
-            this.removeall(false);
+          // if (chapter === undefined && window.confirm("clear all?"))
+          //   this.removeall(false);
 
           // https://www.literotica.com/s/a-trip-to-rome-1?page=2
           url =
