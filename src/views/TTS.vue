@@ -833,7 +833,7 @@ export default {
           }
 
           let text = await fetch(
-            "https://cors-anywhere.herokuapp.com/" + url
+            "https://salty-temple-23639.herokuapp.com/" + url
           ).then((r) => r.text());
 
           let title = text
@@ -858,7 +858,7 @@ export default {
             );
             for (let i = 2; i <= lastpage; i++) {
               let text = await fetch(
-                "https://cors-anywhere.herokuapp.com/" + url + "?page=" + i
+                "https://salty-temple-23639.herokuapp.com/" + url + "?page=" + i
               ).then((r) => r.text());
               content +=
                 "\n" +
@@ -884,7 +884,7 @@ export default {
           // console.log(pages);
         } else {
           let text = await fetch(
-            "https://cors-anywhere.herokuapp.com/" + url
+            "https://salty-temple-23639.herokuapp.com/" + url
           ).then((r) => r.text());
           let result = text
             .match(/<body[^>]*>(.|[\n\r])*<\/body>/)[0] // get body text
