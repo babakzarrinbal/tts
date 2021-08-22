@@ -480,9 +480,9 @@ export default {
   created() {
     let getvoicestry = 0;
     let _self = this;
-    window.speechSynthesis.addEventListener("voiceschanged", () =>
-      console.log("voiceschanged")
-    );
+    // window.speechSynthesis.addEventListener("voiceschanged", () =>
+    //   console.log("voiceschanged")
+    // );
     let getvoicesinterval = window.setInterval(() => {
       getvoicestry++;
       let voices = window.speechSynthesis.getVoices();
@@ -603,7 +603,6 @@ export default {
         msg.voiceURI = this.pbsettings.voice.voiceURI;
         msg.lang = this.pbsettings.voice.lang;
       }
-      console.log(this.pbsettings.voice);
       msg.rate = this.pbsettings.speed;
       msg.pitch = this.pbsettings.pitch;
       let _self = this;
@@ -833,7 +832,6 @@ export default {
               "https://salty-temple-23639.herokuapp.com/" + url
             )
               .then((r) => {
-                console.log(r);
                 if (r.status !== 200) {
                   alert("coudn't get url data...");
                   return "";
@@ -856,7 +854,6 @@ export default {
                 url
               ) || ""
             ).trim();
-            console.log(url);
           } while (url);
           await this.newstory(title, content);
           await this.savestorycontent(true);
