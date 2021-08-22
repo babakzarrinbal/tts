@@ -348,7 +348,13 @@
       </ul>
     </div>
     <div
-      class="position-fixed d-flex justify-content-center align-items-center overflow-hidden"
+      class="
+        position-fixed
+        d-flex
+        justify-content-center
+        align-items-center
+        overflow-hidden
+      "
       :style="
         'height:' +
         (isfullscreen ? '100vh;' : '0px !important;') +
@@ -427,10 +433,12 @@
         />
       </div>
     </div>
+    <filterList />
   </div>
 </template>
 
 <script>
+import filterList from "../components/filterList";
 export default {
   name: "TTS",
   data() {
@@ -464,6 +472,9 @@ export default {
             bmactions: false,
           },
     };
+  },
+  components: {
+    filterList,
   },
   mounted() {},
   created() {
@@ -793,7 +804,22 @@ export default {
       }
       return;
     },
-    async importfromurl(url, chapter, baseurl) {
+    async importfromurl(url) {
+      let title = "",
+        content = "";
+      let titlePath = window.localStorage.getItem("titlePath");
+      let contentPath = window.localStorage.getItem("contentPath");
+      if (!titlePath) {
+        titlePath =
+          "#up > div:nth-child(3) > div.page__extended.proximanova.default_line_height.default_size > div.page.clearfix > div.page__main.page__main-wrapper.clearfix > div.panel.clearfix.j_bl.j_bv > h1";
+        window.localStorage.setItem("titlePath", titlePath);
+      }
+      if (!contentPath) {
+        contentPath =
+          "#up > div:nth-child(3) > div.page__extended.proximanova.default_line_height.default_size > div.page.clearfix > div.page__main.page__main-wrapper.clearfix > div.panel.article.aa_eQ > div:nth-child(1) > div"
+        window.localStorage.setItem("contentPath", contentPath);
+      }
+
       url = url || "";
       while (url === "") {
         url = window.prompt("url to fetch");
@@ -802,86 +828,38 @@ export default {
 
       try {
         if (url.includes("literotica.com")) {
-          // if (chapter === undefined && window.confirm("clear all?"))
-          //   this.removeall(false);
-
-          // https://www.literotica.com/s/a-trip-to-rome-1?page=2
-          url =
-            url.lastIndexOf("?") != -1
-              ? url.slice(0, url.lastIndexOf("?"))
-              : url;
-          if (chapter === undefined) {
-            if (window.confirm("download all chapters?")) {
-              if (Number(url.slice(url.lastIndexOf("-") + 1))) {
-                return this.importfromurl(
-                  url.slice(0, url.lastIndexOf("-")),
-                  0
-                );
-              }
+          do {
+            let text = await fetch(
+              "https://salty-temple-23639.herokuapp.com/" + url
+            )
+              .then((r) => {
+                console.log(r);
+                if (r.status !== 200) {
+                  alert("coudn't get url data...");
+                  return "";
+                }
+                return r.text();
+              })
+              .catch(console.error);
+            let div = document.createElement("div");
+            div.innerHTML = text.trim();
+            if (text) {
+              title = title || (div.querySelector(titlePath) || {}).innerText;
+              while (!title) title = window.prompt("manual story title");
+              let ncontent = (div.querySelector(contentPath) || {}).innerText;
+              if (ncontent) content += ncontent;
+              else alert("couldn't get content!!!");
             }
-          } else {
-            if (!chapter) {
-              return (
-                (await this.importfromurl(url + "-01", 1, url + "-")) ||
-                this.importfromurl(
-                  url.slice(0, url.lastIndexOf("-")),
-                  1,
-                  url + "-"
-                )
-              );
-            }
-          }
-
-          let text = await fetch(
-            "https://salty-temple-23639.herokuapp.com/" + url
-          ).then((r) => r.text());
-
-          let title = text
-            .match(/<h1[^>]*>(.|[\n\r])*?<\/h1>/)[0]
-            .replace(/<[^>]*>/g, "");
-
-          let content = text
-            .match(
-              /<div class="b-story-body-x x-r15"[^>]*>(.|[\n\r])*?<\/div>/
-            )[0]
-            .replace(/<[^>]*>/g, "");
-
-          let pages = text.match(
-            /<select name="page"[^>]*>(.|[\n\r])*?<\/select>/
-          );
-          if (pages) {
-            let allpages = pages[0].match(
-              /<option[^>]*>(.|[\n\r])*?<\/option>/g
-            );
-            let lastpage = window.parseInt(
-              allpages[allpages.length - 1].replace(/<[^>]*>/g, "")
-            );
-            for (let i = 2; i <= lastpage; i++) {
-              let text = await fetch(
-                "https://salty-temple-23639.herokuapp.com/" + url + "?page=" + i
-              ).then((r) => r.text());
-              content +=
-                "\n" +
-                text
-                  .match(
-                    /<div class="b-story-body-x x-r15"[^>]*>(.|[\n\r])*?<\/div>/
-                  )[0]
-                  .replace(/<[^>]*>/g, "");
-
-              // await this.newstory(title + "_" + i, content);
-              // await this.savestorycontent(true);
-            }
-          }
-
+            url = (
+              window.prompt(
+                text ? "url to fetch" : "couldn't get data!!!",
+                url
+              ) || ""
+            ).trim();
+            console.log(url);
+          } while (url);
           await this.newstory(title, content);
           await this.savestorycontent(true);
-          if (content && chapter) {
-            chapter++;
-            (await this.importfromurl(baseurl + chapter, chapter, baseurl)) ||
-              (chapter < 10 &&
-                this.importfromurl(baseurl + "0" + chapter, chapter, baseurl));
-          }
-          // console.log(pages);
         } else {
           let text = await fetch(
             "https://salty-temple-23639.herokuapp.com/" + url
