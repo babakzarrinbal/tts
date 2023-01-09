@@ -15,7 +15,7 @@
     "fastclick": "^1.0.6",
     "html2canvas": "^1.0.0-rc.7",
     "jquery": "^3.3.1",
-    "luxon": "^1.16.0",
+    "luxon": "^2.5.2",
     "pdfjs-dist": "^2.2.228",
     "register-service-worker": "^1.5.2",
     "request": "^2.88.0",
